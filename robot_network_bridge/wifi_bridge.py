@@ -198,9 +198,11 @@ def main():
     with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
 
+    config_dir = os.path.dirname(os.path.abspath(config_path))
+
     topics_config    = config.get('topics', {})
-    wired_xml        = config.get('wired_xml', '')
-    wifi_xml         = config.get('wifi_xml', '')
+    wired_xml        = os.path.join(config_dir, config.get('wired_xml', ''))
+    wifi_xml         = os.path.join(config_dir, config.get('wifi_xml', ''))
     source_domain_id = config.get('source_domain_id', 0)
     target_domain_id = config.get('target_domain_id', 0)
 

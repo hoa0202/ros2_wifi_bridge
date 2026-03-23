@@ -1,5 +1,5 @@
-wired_xml: /home/user/ouster_ws/install/robot_network_bridge/share/robot_network_bridge/config/cyclonedds_wired.xml
-wifi_xml: /home/user/ouster_ws/install/robot_network_bridge/share/robot_network_bridge/config/cyclonedds_wifi.xml
+wired_xml: cyclonedds_wired.xml
+wifi_xml: cyclonedds_wifi.xml
 source_domain_id: 15
 target_domain_id: 0
 
