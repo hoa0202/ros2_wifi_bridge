@@ -1,0 +1,13 @@
+wired_xml: /home/user/ouster_ws/install/robot_network_bridge/share/robot_network_bridge/config/cyclonedds_wired.xml
+wifi_xml: /home/user/ouster_ws/install/robot_network_bridge/share/robot_network_bridge/config/cyclonedds_wifi.xml
+source_domain_id: 15
+target_domain_id: 0
+
+topics:
+  /tf:
+    type: tf2_msgs/msg/TFMessage
+    reliable: true        # ← 추가
+  /tf_static:
+    type: tf2_msgs/msg/TFMessage
+    latched: true
+    reliable: true        # ← 추가

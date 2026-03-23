@@ -1,0 +1,5 @@
+.specstory/
+__pycache__/
+*.pyc
+*.pyo
+resource/
