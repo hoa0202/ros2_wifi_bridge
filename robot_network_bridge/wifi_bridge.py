@@ -190,11 +190,12 @@ def publisher_process(topics_config, conn, wifi_xml, target_domain_id):
 
 
 def main():
-    if len(sys.argv) < 2:
-        print('Usage: wifi_bridge <config.yaml>')
-        sys.exit(1)
+    if len(sys.argv) >= 2:
+        config_path = sys.argv[1]
+    else:
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config', 'wifi_bridge.yaml')
 
-    with open(sys.argv[1], 'r') as f:
+    with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
 
     topics_config    = config.get('topics', {})
