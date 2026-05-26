@@ -1,13 +1,71 @@
 wired_xml: cyclonedds_wired.xml
 wifi_xml: cyclonedds_wifi.xml
-source_domain_id: 15
-target_domain_id: 0
+
+# 신 키 (구 키 source_domain_id / target_domain_id 도 fallback 됨)
+wired_domain_id: 15
+wifi_domain_id: 1
+
+# Jetson Thor 양방향 브리지
+#   유선 NIC: enP2p1s0  (ROS_DOMAIN_ID=15)
+#   WiFi NIC: wlP1p1s0  (ROS_DOMAIN_ID=0)
+#
+# direction:
+#   wired_to_wifi  - 유선쪽 sub  -> WiFi쪽 pub  (외부로 송출)
+#   wifi_to_wired  - WiFi쪽 sub  -> 유선쪽 pub  (외부로부터 수신)
+#   bidirectional  - 양쪽 sub+pub. publish 직전 md5 해시를 TTL(2s) 캐시에
+#                    기록해서 자기가 보낸 메시지가 sub로 돌아오면 drop.
+#                    한계: 동일 payload가 2초 내에 진짜로 두 번 발생하면
+#                          두 번째가 drop됨 (명령류 토픽에 한해 사용 권장).
+#
+# 등록 안 된 토픽은 유선(domain 15)에만 머무름 → WiFi 트래픽 최소화 목적 달성.
 
 topics:
+  # ── TF (단방향: 유선 -> WiFi) ─────────────────────────────────────
   /tf:
     type: tf2_msgs/msg/TFMessage
-    reliable: true        # ← 추가
+    direction: wired_to_wifi
+    reliable: true
   /tf_static:
     type: tf2_msgs/msg/TFMessage
+    direction: wired_to_wifi
     latched: true
-    reliable: true        # ← 추가
+    reliable: true
+
+  # ── Grid Map (단방향: 유선 -> WiFi) ──────────────────────────────
+  /grid_map:
+    type: nav_msgs/msg/OccupancyGrid
+    direction: wired_to_wifi
+    latched: true
+    reliable: true
+  /grid_map_updates:
+    type: map_msgs/msg/OccupancyGridUpdate
+    direction: wired_to_wifi
+    reliable: true
+
+  # ── 단방향 명령/상태 (유선 -> WiFi) ──────────────────────────────
+  /action_check:
+    type: std_msgs/msg/String
+    direction: wired_to_wifi
+    reliable: true
+  /harv_robot/move:
+    type: std_msgs/msg/String
+    direction: wired_to_wifi
+    reliable: true
+
+  # ── 양방향 명령 ───────────────────────────────────────────────────
+  /action:
+    type: std_msgs/msg/String
+    direction: bidirectional
+    reliable: true
+  /harv_robot/docking_move:
+    type: std_msgs/msg/String
+    direction: bidirectional
+    reliable: true
+  /harv_robot/line_move:
+    type: std_msgs/msg/String
+    direction: bidirectional
+    reliable: true
+  /harv_stat:
+    type: std_msgs/msg/String
+    direction: bidirectional
+    reliable: true
